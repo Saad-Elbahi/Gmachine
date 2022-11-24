@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,13 +142,17 @@ public class MachineService implements IDao<Machine> {
 	}
 	
 
-	public  List<Machine> deuxDate(java.util.Date dateDebut, java.util.Date dateFin) {
+	public  List<Machine> deuxDate(LocalDate localdate1,LocalDate localdate2) {
+		String d= localdate1.getYear()+""+localdate1.getMonthValue()+""+localdate1.getDayOfMonth();
+		String d1=localdate2.getYear()+""+localdate2.getMonthValue()+""+localdate2.getDayOfMonth();
 		List<Machine> machines = new ArrayList<Machine>();
 		try {
 			
-			String sql = "select * from machine where dateAchat  BETWEEN " + dateDebut+ "AND "+ dateFin;
-			Statement st = Connexion.getConnection().createStatement();
-			ResultSet rs  = st.executeQuery(sql);
+			String sql = "select * from machine where dateAchat  BETWEEN  + ?+ AND + ?";
+			PreparedStatement st = Connexion.getConnection().prepareStatement(sql);
+			st.setString(1, d);
+			st.setNString(2, d1);
+			ResultSet rs  = st.executeQuery();
 			while(rs.next())
 				machines.add(new Machine (rs.getInt("id"), rs.getString("reference"), rs.getString("marque"),rs.getDouble("prix"), rs.getDate("dateAchat"), ss.findById(rs.getInt("salle"))));
 		} catch (SQLException e) 
